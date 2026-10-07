@@ -1,9 +1,9 @@
 OLYMPUS FOREX TRADING ACADEMY — V3
 
-V3 additions:
-- Testimonials section (sample placeholder testimonials clearly marked for replacement with verified student feedback)
+V4 additions:
+- Student feedback names updated to Princess Faith, Patience Godwin and Sunday Ejokwu
 - Full enrollment application form
-- Course/package selection
+- Monthly course/package pricing ($35/month, $80/month, $149/month)
 - Online / physical / either class selection
 - Experience level
 - Preferred schedule
@@ -28,3 +28,6 @@ USAGE
 WHATSAPP
 The form sends applications to: 09041004544
 International WhatsApp format used by the site: +234 904 100 4544
+
+- Required Terms & Conditions / Privacy Policy acceptance before submitting the enrollment application
+- Note: V4 does not include a real user authentication/login backend. A secure login system requires an authentication service/backend.

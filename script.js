@@ -34,7 +34,14 @@ form?.addEventListener("submit", (event) => {
   const experience = String(data.get("experience") || "").trim();
   const schedule = String(data.get("schedule") || "").trim();
   const goal = String(data.get("goal") || "").trim();
+  const termsAccepted = data.get("termsAccepted") === "on";
   const message = String(data.get("message") || "").trim();
+
+  if (!termsAccepted) {
+    status.textContent = "Please accept the Terms & Conditions before submitting.";
+    status.classList.add("show");
+    return;
+  }
 
   const text = [
     "Hello Olympus Forex Trading Academy,",
@@ -49,6 +56,7 @@ form?.addEventListener("submit", (event) => {
     `Preferred schedule: ${schedule}`,
     `Training goal: ${goal}`,
     message ? `Additional note: ${message}` : "",
+    "Terms & Conditions: Accepted",
     "",
     "Please let me know the next steps."
   ].filter(Boolean).join("\n");
