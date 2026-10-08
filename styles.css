@@ -39,7 +39,7 @@ body{background:radial-gradient(circle at 12% 8%,rgba(133,70,220,.26),transparen
 .terms-check input{margin-top:.25rem;accent-color:#d4af37;flex:0 0 auto}
 .terms-check a{color:inherit;text-decoration:underline}
 /* Logo sizing */
-img[src="logo.png"] {
+img[src="logo.jpg"] {
     width: 280px;
     height: auto;
     max-width: 100%;
@@ -47,7 +47,7 @@ img[src="logo.png"] {
 
 /* Mobile logo */
 @media (max-width: 768px) {
-    img[src="logo.png"] {
+    img[src="logo.jpg"] {
         width: 190px;
         max-width: 55vw;
         height: auto;
