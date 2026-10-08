@@ -1,6 +1,13 @@
 :root{--bg:#08060c;--panel:#101010;--panel2:#151515;--gold:#d8a83e;--gold2:#f1cf73;--text:#f6f2e8;--muted:#aaa69b;--line:rgba(216,168,62,.22);--max:1180px}
 *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--text);font-family:"DM Sans",sans-serif;line-height:1.6}a{color:inherit;text-decoration:none}
 .site-header{position:sticky;top:0;z-index:20;display:flex;align-items:center;justify-content:space-between;padding:18px 5vw;background:rgba(7,7,7,.88);backdrop-filter:blur(16px);border-bottom:1px solid var(--line)}
+.site-header img{
+  width:48px;
+  height:48px;
+  object-fit:contain;
+  margin-right:12px;
+  vertical-align:middle;
+}
 .brand{display:flex;gap:12px;align-items:center}.brand-mark{display:grid;place-items:center;width:38px;height:38px;border:1px solid var(--gold);color:var(--gold);clip-path:polygon(50% 0,100% 100%,0 100%)}.brand strong{display:block;font-family:"Playfair Display",serif;letter-spacing:.12em;font-size:20px}.brand small{display:block;color:var(--muted);font-size:8px;letter-spacing:.2em}
 .nav{display:flex;align-items:center;gap:24px;font-size:14px;color:#ddd}.nav a:not(.nav-cta):hover{color:var(--gold2)}.nav-cta{padding:10px 17px;border:1px solid var(--gold);color:var(--gold2)}.menu-toggle{display:none;background:none;border:0;color:var(--text);font-size:26px}
 .hero{min-height:720px;max-width:var(--max);margin:auto;padding:90px 5vw 70px;display:grid;grid-template-columns:1.05fr .95fr;align-items:center;gap:50px;position:relative;overflow:hidden}.hero-glow{position:absolute;width:500px;height:500px;border-radius:50%;background:rgba(216,168,62,.08);filter:blur(60px);right:-150px;top:80px}.hero-copy{position:relative;z-index:1}.eyebrow{font-size:11px;letter-spacing:.28em;color:var(--gold2);font-weight:700;margin:0 0 18px}h1,h2{font-family:"Playfair Display",serif;line-height:1.05;margin:0}h1{font-size:clamp(52px,7vw,88px);letter-spacing:-.04em}h1 span{color:var(--gold2)}h2{font-size:clamp(36px,5vw,58px)}.hero-text{max-width:610px;color:var(--muted);font-size:18px;margin:25px 0 30px}.hero-actions{display:flex;gap:14px;flex-wrap:wrap}.button{display:inline-flex;align-items:center;justify-content:center;padding:14px 22px;font-weight:700;border-radius:2px;transition:.2s;cursor:pointer}.button:hover{transform:translateY(-2px)}.button-gold{background:linear-gradient(135deg,var(--gold2),var(--gold));color:#111}.button-ghost{border:1px solid #49443a;color:#eee}.trust-row{display:flex;gap:22px;flex-wrap:wrap;margin-top:28px;color:#bdb9ae;font-size:13px}
