@@ -1,14 +1,47 @@
-<form id="loginForm">
-  <label for="email">Admin email</label>
-  <input id="email" type="email" autocomplete="username"
-    placeholder="Enter your admin email" required>
+<!DOCTYPE html>
 
-  <label for="password">Password</label>
-  <input id="password" type="password" autocomplete="current-password"
-    placeholder="Enter your password" required>
+<html lang="en">
 
-  <button id="loginButton" type="submit">Sign In Securely</button>
-  <p id="message" role="status" aria-live="polite"></p>
-</form>
+<head>
 
-<p class="note">Authorised administrators only. Keep your login details private.</p>
+  <meta charset="UTF-8">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <meta name="theme-color" content="#080808">
+
+  <title>Admin Login | Olympus Forex Trading Academy</title>
+
+  <style>
+
+    * { box-sizing: border-box; }
+
+    body {
+
+      margin: 0; min-height: 100vh; display: grid; place-items: center;
+
+      padding: 24px; background: #080808; color: #f5f0e5;
+
+      font-family: Arial, sans-serif;
+
+    }
+
+    .panel {
+
+      width: 100%; max-width: 420px; padding: 36px;
+
+      background: #111; border: 1px solid #8c7134;
+
+      border-radius: 16px; box-shadow: 0 20px 70px #000;
+
+    }
+
+    .brand { text-align: center; margin-bottom: 30px; }
+
+    .brand img { width: 84px; height: 84px; object-fit: contain; }
+
+    .brand h1 { color: #d9b45b; font-size: 21px; margin: 14px 0 6px; }
+
+    .brand p, .note { color: #aaa; font-size: 13px; line-height: 1.6; }
+
+    label { display: block; margin: 18px 0 8px; font-size: 13px; }
