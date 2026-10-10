@@ -92,4 +92,37 @@
     const year = document.getElementById("year");
     if (year) year.textContent = String(new Date().getFullYear());
   });
+// Automatically update packages based on class type
+  const classTypeField = document.getElementById("classType");
+  const packageField = document.getElementById("package");
+
+  if (classTypeField && packageField) {
+    const packages = {
+      Online: [
+        { value: "Starter", label: "Starter - $35/month" },
+        { value: "Premium", label: "Premium - $55/month" },
+        { value: "Elite", label: "Elite - $125/month" }
+      ],
+      Physical: [
+        { value: "Physical Starter", label: "Starter - $50/month" },
+        { value: "Physical Premium", label: "Premium - $100/month" },
+        { value: "Physical Elite", label: "Elite - $200/month" }
+      ]
+    };
+
+    function updatePackages() {
+      const selectedType = classTypeField.value;
+      packageField.innerHTML = '<option value="">Select a package</option>';
+
+      (packages[selectedType] || []).forEach(function (item) {
+        const option = document.createElement("option");
+        option.value = item.value;
+        option.textContent = item.label;
+        packageField.appendChild(option);
+      });
+    }
+
+    classTypeField.addEventListener("change", updatePackages);
+    updatePackages();
+  }
 })();
