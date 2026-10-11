@@ -54,3 +54,25 @@ img[src="logo.jpg"] {
         height: auto;
     }
 }
+/* Softer rounded corners — luxury styling */
+.testimonial,
+.price-card,
+.feature,
+.course-card,
+.application-form,
+.physical-note,
+.legal-card,
+.chart-card {
+  border-radius: 14px;
+}
+
+.button,
+.nav-cta {
+  border-radius: 7px;
+}
+
+.form-grid input,
+.form-grid select,
+.form-grid textarea {
+  border-radius: 7px;
+}
