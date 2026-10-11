@@ -76,3 +76,23 @@ img[src="logo.jpg"] {
 .form-grid textarea {
   border-radius: 7px;
 }
+/* Subtle floating animation for the hero chart */
+.chart-card {
+  animation: chartFloat 5s ease-in-out infinite;
+  will-change: transform;
+}
+
+@keyframes chartFloat {
+  0%, 100% {
+    transform: translateY(0) rotate(2deg);
+  }
+  50% {
+    transform: translateY(-10px) rotate(2deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .chart-card {
+    animation: none;
+  }
+}
