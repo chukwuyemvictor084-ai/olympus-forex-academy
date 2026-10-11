@@ -96,3 +96,52 @@ img[src="logo.jpg"] {
     animation: none;
   }
 }
+/* Animated gold trend line */
+.chart-line {
+  transform-origin: left center;
+  animation: goldLineMove 4s ease-in-out infinite alternate;
+  filter: drop-shadow(0 0 4px rgba(241, 207, 115, 0.35));
+}
+
+@keyframes goldLineMove {
+  0% {
+    transform: skewY(-13deg) scaleX(0.92);
+    opacity: 0.7;
+  }
+  100% {
+    transform: skewY(-13deg) scaleX(1);
+    opacity: 1;
+  }
+}
+
+/* Gentle glow on the gold bars */
+.chart-grid i {
+  animation: goldBarGlow 3s ease-in-out infinite alternate;
+}
+
+.chart-grid i:nth-child(2) { animation-delay: 0.3s; }
+.chart-grid i:nth-child(3) { animation-delay: 0.6s; }
+.chart-grid i:nth-child(4) { animation-delay: 0.9s; }
+.chart-grid i:nth-child(5) { animation-delay: 1.2s; }
+.chart-grid i:nth-child(6) { animation-delay: 1.5s; }
+.chart-grid i:nth-child(7) { animation-delay: 1.8s; }
+.chart-grid i:nth-child(8) { animation-delay: 2.1s; }
+.chart-grid i:nth-child(9) { animation-delay: 2.4s; }
+.chart-grid i:nth-child(10) { animation-delay: 2.7s; }
+
+@keyframes goldBarGlow {
+  from {
+    filter: brightness(0.9);
+  }
+  to {
+    filter: brightness(1.2);
+  }
+}
+
+/* Respect reduced-motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  .chart-line,
+  .chart-grid i {
+    animation: none;
+  }
+}
