@@ -197,5 +197,28 @@
   <footer><div><strong>OLYMPUS</strong><span>FOREX TRADING ACADEMY</span></div><p>© <span id="year"></span> Olympus Forex Trading Academy. Trading involves risk.</p><div class="footer-links"><a href="privacy.html">Privacy Policy</a><a href="terms.html">Terms & Conditions</a><a href="https://wa.me/2349041004544">WhatsApp: 09041004544</a><a href="https://t.me/Olympus_FA" target="_blank" rel="noopener noreferrer">Telegram</a>
 <a href="mailto:Olympus4.2024@gmail.com">Email: Olympus4.2024@gmail.com</a></div></footer>
   <script src="script.js"></script>
+  <script>
+document.addEventListener("DOMContentLoaded", function () {
+  // Correct physical-class prices in the application form
+  document.querySelectorAll("select").forEach(function (select) {
+    const options = Array.from(select.options);
+    const isPhysicalPackage = options.some(function (option) {
+      return /starter|premium|elite/i.test(option.text);
+    });
+
+    if (!isPhysicalPackage) return;
+
+    options.forEach(function (option) {
+      if (/starter/i.test(option.text)) {
+        option.text = "Starter - $100";
+      } else if (/premium/i.test(option.text)) {
+        option.text = "Premium - $199";
+      } else if (/elite/i.test(option.text)) {
+        option.text = "Elite - $325";
+      }
+    });
+  });
+});
+</script>
 </body>
 </html>
