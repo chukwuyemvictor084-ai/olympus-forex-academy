@@ -104,9 +104,9 @@
         { value: "Elite", label: "Elite - $125/month" }
       ],
       Physical: [
-        { value: "Physical Starter", label: "Starter - $50/month" },
-        { value: "Physical Premium", label: "Premium - $100/month" },
-        { value: "Physical Elite", label: "Elite - $200/month" }
+        { value: "Physical Starter", label: "Starter - $100/month" },
+        { value: "Physical Premium", label: "Premium - $199/month" },
+        { value: "Physical Elite", label: "Elite - $325/month" }
       ]
     };
 
