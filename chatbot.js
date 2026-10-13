@@ -237,7 +237,15 @@
         panel.classList.add("open"); fab.textContent = "×"; hideBubble();
         greet(); setTimeout(function () { input.focus(); }, 50);
       });
+      bubble.addEventListener("keydown", function (e) {
+        if (e.key === "Enter" || e.key === " ") { e.preventDefault(); bubble.click(); }
+      });
     }
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "Escape" && panel.classList.contains("open")) {
+        panel.classList.remove("open"); fab.textContent = "◈"; setTimeout(showBubble, 600);
+      }
+    });
     var closeBtn = document.getElementById("olympus-chat-close");
     if (closeBtn) closeBtn.addEventListener("click", function () {
       panel.classList.remove("open"); fab.textContent = "◈"; setTimeout(showBubble, 600);
