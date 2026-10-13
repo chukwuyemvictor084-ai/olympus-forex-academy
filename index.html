@@ -11,6 +11,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="chatbot.css">
  <link rel="icon" href="favicon.ico" sizes="any">
 <link rel="icon" type="image/png" sizes="96x96" href="favicon-96x96.png">
   <link rel="apple-touch-icon" href="apple-touch-icon.png">
@@ -196,7 +197,17 @@
 
   <footer><div><strong>OLYMPUS</strong><span>FOREX TRADING ACADEMY</span></div><p>© <span id="year"></span> Olympus Forex Trading Academy. Trading involves risk.</p><div class="footer-links"><a href="privacy.html">Privacy Policy</a><a href="terms.html">Terms & Conditions</a><a href="https://wa.me/2349041004544">WhatsApp: 09041004544</a><a href="https://t.me/Olympus_FA" target="_blank" rel="noopener noreferrer">Telegram</a>
 <a href="mailto:Olympus4.2024@gmail.com">Email: Olympus4.2024@gmail.com</a></div></footer>
+  <div id="olympus-chat-bubble" role="button" tabindex="0" aria-label="Open chat">Ask me anything</div>
+  <button id="olympus-chat-fab" aria-label="Chat with Olympus assistant">◈</button>
+  <section id="olympus-chat-panel" aria-label="Olympus assistant chat">
+    <div class="olympus-chat-header"><span class="dot"></span><div><strong>OLYMPUS ASSISTANT</strong><small>Packages • Prices • Apply help</small></div><button id="olympus-chat-close" aria-label="Close chat">×</button></div>
+    <div id="olympus-chat-messages"></div>
+    <div class="olympus-chips"><button data-q="How much is Premium physical?">Prices</button><button data-q="Compare Starter vs Premium vs Elite">Compare</button><button data-q="How do I apply?">Apply</button><button data-q="Online or physical?">Online vs Physical</button></div>
+    <form id="olympus-chat-form" class="olympus-chat-input"><input id="olympus-chat-text" type="text" placeholder="Ask about prices, packages…" autocomplete="off"><button type="submit">➤</button></form>
+  </section>
   <script src="script.js"></script>
+  <script src="supabase-config.js"></script>
+  <script src="chatbot.js"></script>
   <script>
 document.addEventListener("DOMContentLoaded", function () {
   // Correct physical-class prices in the application form

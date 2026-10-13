@@ -1,0 +1,98 @@
+/* Olympus AI Assistant — luxury black/gold, mobile friendly */
+#olympus-chat-fab {
+  position: fixed; right: 22px; bottom: 22px; z-index: 60;
+  width: 60px; height: 60px; border-radius: 50%; border: 1px solid rgba(216,168,62,.6);
+  background: linear-gradient(135deg,#f1cf73,#d8a83e); color: #111;
+  font-size: 26px; cursor: pointer; box-shadow: 0 12px 40px rgba(0,0,0,.55);
+  display: grid; place-items: center; transition: transform .2s;
+}
+#olympus-chat-fab:hover { transform: translateY(-2px); }
+/* Protruding prompt bubble — frosted glass, gold at 8% */
+#olympus-chat-bubble {
+  position: fixed; right: 94px; bottom: 32px; z-index: 60;
+  padding: 11px 16px; font-size: 13.5px; font-weight: 700; letter-spacing: .01em;
+  color: #f6f2e8; cursor: pointer; white-space: nowrap;
+  background: rgba(216,168,62,0.08);
+  -webkit-backdrop-filter: blur(14px) saturate(150%);
+  backdrop-filter: blur(14px) saturate(150%);
+  border: 1px solid rgba(241,207,115,.55);
+  border-radius: 16px 16px 4px 16px;
+  box-shadow: 0 8px 32px rgba(0,0,0,.45), inset 0 1px 0 rgba(255,255,255,.22), 0 0 18px rgba(216,168,62,.28);
+  opacity: 0; pointer-events: none; transform-origin: bottom right;
+}
+#olympus-chat-bubble::after {
+  content: ""; position: absolute; right: -7px; bottom: 14px;
+  width: 12px; height: 12px; background: rgba(216,168,62,0.08);
+  border-right: 1px solid rgba(241,207,115,.55);
+  border-bottom: 1px solid rgba(241,207,115,.35);
+  transform: rotate(45deg); border-bottom-right-radius: 3px;
+}
+#olympus-chat-bubble.show {
+  opacity: 1; pointer-events: auto;
+  animation: olympusBubbleWarp .7s cubic-bezier(.22,1.4,.36,1) both, olympusLiquid 6s ease-in-out .8s infinite;
+}
+#olympus-chat-bubble.hide { opacity: 0; pointer-events: none; transform: translateX(16px) scale(.6); transition: opacity .25s, transform .3s; }
+@keyframes olympusBubbleWarp {
+  0% { opacity: 0; transform: translateX(34px) scale(.2); border-radius: 60% 40% 55% 45% / 55% 60% 40% 45%; filter: blur(6px); }
+  55% { opacity: 1; transform: translateX(-4px) scale(1.06); border-radius: 42% 58% 46% 54% / 52% 44% 56% 48%; filter: blur(0); }
+  75% { transform: translateX(2px) scale(.98); border-radius: 16px 16px 4px 16px; }
+  100% { opacity: 1; transform: translateX(0) scale(1); border-radius: 16px 16px 4px 16px; filter: blur(0); }
+}
+@keyframes olympusLiquid {
+  0%, 100% { border-radius: 16px 16px 4px 16px; }
+  30% { border-radius: 18px 14px 6px 16px; }
+  60% { border-radius: 14px 18px 4px 14px; }
+}
+@media (prefers-reduced-motion: reduce) { #olympus-chat-bubble.show { animation: none; } }
+#olympus-chat-panel {
+  position: fixed; right: 22px; bottom: 94px; z-index: 60;
+  width: min(380px, calc(100vw - 32px)); height: min(560px, calc(100vh - 130px));
+  display: none; flex-direction: column; overflow: hidden;
+  background: linear-gradient(145deg, rgba(30,18,45,.98), rgba(7,7,10,.98));
+  border: 1px solid rgba(190,160,255,.25); border-radius: 16px;
+  box-shadow: 0 24px 80px rgba(0,0,0,.6);
+}
+#olympus-chat-panel.open { display: flex; }
+.olympus-chat-header {
+  padding: 14px 16px; border-bottom: 1px solid rgba(216,168,62,.25);
+  display: flex; align-items: center; gap: 10px;
+}
+.olympus-chat-header .dot {
+  width: 10px; height: 10px; border-radius: 50%;
+  background: #4ade80; box-shadow: 0 0 10px #4ade80;
+}
+.olympus-chat-header strong { font-family: "Playfair Display", serif; letter-spacing: .06em; color: #f1cf73; }
+.olympus-chat-header small { display: block; color: #aaa69b; font-size: 11px; }
+.olympus-chat-header button {
+  margin-left: auto; background: none; border: 0; color: #aaa;
+  font-size: 20px; cursor: pointer;
+}
+#olympus-chat-messages {
+  flex: 1; overflow-y: auto; padding: 16px; display: flex;
+  flex-direction: column; gap: 10px; font-size: 14px;
+}
+.olympus-msg { max-width: 85%; padding: 10px 13px; border-radius: 12px; line-height: 1.5; white-space: pre-line; }
+.olympus-msg.bot { background: rgba(255,255,255,.06); border: 1px solid rgba(190,160,255,.2); color: #f6f2e8; align-self: flex-start; }
+.olympus-msg.user { background: linear-gradient(135deg,#f1cf73,#d8a83e); color: #111; font-weight: 600; align-self: flex-end; }
+.olympus-msg.bot a { color: #f1cf73; text-decoration: underline; }
+.olympus-chips { display: flex; flex-wrap: wrap; gap: 8px; padding: 0 16px 10px; }
+.olympus-chips button {
+  background: none; border: 1px solid rgba(216,168,62,.5); color: #f1cf73;
+  font-size: 12px; padding: 7px 11px; border-radius: 20px; cursor: pointer;
+}
+.olympus-chips button:hover { background: rgba(216,168,62,.15); }
+.olympus-chat-input { display: flex; gap: 8px; padding: 12px; border-top: 1px solid rgba(216,168,62,.25); }
+.olympus-chat-input input {
+  flex: 1; background: #090909; border: 1px solid #35322c; color: #eee;
+  padding: 11px 13px; border-radius: 8px; font: inherit; font-size: 14px; outline: none;
+}
+.olympus-chat-input input:focus { border-color: #d8a83e; }
+.olympus-chat-input button {
+  background: linear-gradient(135deg,#f1cf73,#d8a83e); border: 0; border-radius: 8px;
+  padding: 0 16px; font-weight: 800; cursor: pointer; color: #111;
+}
+.olympus-typing { color: #aaa69b; font-size: 12px; font-style: italic; }
+@media (max-width: 560px) {
+  #olympus-chat-fab { right: 16px; bottom: 16px; }
+  #olympus-chat-panel { right: 16px; bottom: 86px; }
+}
