@@ -94,6 +94,9 @@
       <div id="enrollList"><p>Loading…</p></div>
       <h3 style="color:#d9b45b;margin-top:22px">Lessons (Zoom + PDFs)</h3>
       <div id="lessonList"><p>Login to view.</p></div>
+      <h3 style="color:#d9b45b;margin-top:22px">Quizzes</h3>
+      <div id="quizList"><p>Login to view.</p></div>
+      <div id="quizTake" class="hidden" style="border:1px solid #8c7134;border-radius:10px;padding:14px;margin-top:12px"></div>
     </div>
   </div>
 
@@ -140,22 +143,114 @@
           '<div style="color:#aaa;font-size:13px">' + esc(x.created_at || "") + (x.receipt_ref ? " · Ref: " + esc(x.receipt_ref) : "") + "</div></div>";
       }).join("");
       loadLessons(e.data);
+      window._enrolls = e.data;
+      loadQuizzes(e.data, user);
     }
 
+    var QUIZ_CACHE = {};
+    async function loadQuizzes(enrolls, user) {
+      var box = document.getElementById("quizList");
+      document.getElementById("quizTake").classList.add("hidden");
+      var activePkgs = {};
+      enrolls.forEach(function (x) { if (x.status === "active") activePkgs[x.package] = true; });
+      var q = await client.from("quizzes").select("id,package,title,questions").order("created_at", { ascending: false });
+      if (q.error) { box.innerHTML = "<p>Quizzes unavailable: " + esc(q.error.message) + "</p>"; return; }
+      var mine = await client.from("attempts").select("quiz_id,score,total").eq("user_id", user.id).order("created_at", { ascending: false });
+      var best = {};
+      (mine.data || []).forEach(function (a) {
+        if (!best[a.quiz_id] || a.score > best[a.quiz_id].score) best[a.quiz_id] = a;
+      });
+      QUIZ_CACHE = {};
+      var seenQ = {};
+      var qgroups = { General: [], Starter: [], Premium: [], Elite: [] };
+      q.data.forEach(function (x) {
+        var key = x.package + "|" + x.title;
+        if (seenQ[key] || !qgroups[x.package]) return;
+        seenQ[key] = true;
+        qgroups[x.package].push(x);
+      });
+      var anyVis = PLAN_ORDER.some(function (p) { return qgroups[p].length && (p === "General" || activePkgs[p]); });
+      if (!anyVis) { box.innerHTML = "<p>No quizzes unlocked yet — activate an enrollment to unlock plan quizzes.</p>"; return; }
+      box.innerHTML = PLAN_ORDER.map(function (pkg) {
+        var items = qgroups[pkg];
+        if (!items.length) return "";
+        var unlocked = pkg === "General" || activePkgs[pkg];
+        var head = "<h4 style='color:#d9b45b;margin:18px 0 4px'>" + esc(pkg) + " quizzes <span style='color:#888;font-weight:400'>(" + items.length + ")</span></h4>";
+        if (!unlocked) return head + upgradeBox(pkg);
+        return head + items.map(function (x) {
+        QUIZ_CACHE[x.id] = x;
+        var n = Array.isArray(x.questions) ? x.questions.length : 0;
+        var b = best[x.id] ? " · Best: " + best[x.id].score + "/" + best[x.id].total : "";
+        return '<div class="lesson"><strong>' + esc(x.title) + '</strong> <span class="badge active">' + esc(x.package.toUpperCase()) + '</span>' +
+          '<div style="color:#aaa;font-size:13px">' + n + ' questions' + esc(b) + '</div>' +
+          '<button type="button" data-quiz="' + x.id + '">Take quiz</button></div>';
+        }).join("");
+      }).join("");
+      box.querySelectorAll("button[data-quiz]").forEach(function (btn) {
+        btn.addEventListener("click", function () { takeQuiz(QUIZ_CACHE[btn.getAttribute("data-quiz")], user); });
+      });
+    }
+
+    function takeQuiz(quiz, user) {
+      var t = document.getElementById("quizTake");
+      t.classList.remove("hidden");
+      var html = "<h4>" + esc(quiz.title) + "</h4><form id='quizForm'>";
+      quiz.questions.forEach(function (qq, i) {
+        html += "<p><strong>Q" + (i + 1) + ". " + esc(qq.q) + "</strong></p>";
+        qq.options.forEach(function (op, j) {
+          html += "<label style='display:block;font-weight:400;margin:6px 0'><input type='radio' name='q" + i + "' value='" + j + "'> " + esc(op) + "</label>";
+        });
+      });
+      html += "<button type='submit'>Submit answers</button> <span id='quizScore' style='margin-left:10px'></span></form>";
+      t.innerHTML = html;
+      t.scrollIntoView();
+      document.getElementById("quizForm").addEventListener("submit", async function (e) {
+        e.preventDefault();
+        var score = 0;
+        quiz.questions.forEach(function (qq, i) {
+          var sel = t.querySelector("input[name='q" + i + "']:checked");
+          if (sel && parseInt(sel.value, 10) === qq.answer) score++;
+        });
+        document.getElementById("quizScore").textContent = "Score: " + score + "/" + quiz.questions.length;
+        await client.from("attempts").insert({ user_id: user.id, quiz_id: quiz.id, score: score, total: quiz.questions.length });
+        loadQuizzes(window._enrolls || [], user);
+      });
+    }
+
+    var PLAN_ORDER = ["General", "Starter", "Premium", "Elite"];
+    function upgradeBox(pkg) {
+      return "<div class='lesson locked'><strong>To access " + esc(pkg) + " modules, upgrade your plan.</strong>" +
+        "<div style='color:#aaa;font-size:13px'>Request " + esc(pkg) + " above, pay via bank transfer, then send your receipt on WhatsApp.</div>" +
+        "<div><a href='https://wa.me/2349041004544?text=" + encodeURIComponent("Hello Olympus, I want to upgrade to ") + esc(pkg) + "' target='_blank' rel='noopener'>Upgrade on WhatsApp →</a></div></div>";
+    }
     async function loadLessons(enrolls) {
       var box = document.getElementById("lessonList");
       var activePkgs = {};
       enrolls.forEach(function (x) { if (x.status === "active") activePkgs[x.package] = true; });
       var l = await client.from("lessons").select("*").order("sort", { ascending: true });
       if (l.error) { box.innerHTML = "<p>Could not load lessons: " + l.error.message + "</p>"; return; }
-      box.innerHTML = l.data.map(function (x) {
-        var unlocked = x.package === "General" || activePkgs[x.package];
-        var link = x.url && x.url !== "#"
-          ? '<a href="' + esc(x.url) + '" target="_blank" rel="noopener">' + (x.kind === "pdf" ? "Open PDF" : "Join Zoom") + " →</a>"
-          : '<span style="color:#888">(placeholder — link coming soon)</span>';
-        return '<div class="lesson' + (unlocked ? "" : " locked") + '"><strong>' + esc(x.title) + '</strong> ' +
-          '<span class="badge ' + (unlocked ? "active" : "pending") + '">' + (unlocked ? esc(x.package.toUpperCase()) : "LOCKED") + "</span>" +
-          '<div style="color:#aaa;font-size:13px">' + esc(x.notes || "") + "</div><div>" + (unlocked ? link : "Activate your " + esc(x.package) + " enrollment to unlock.") + "</div></div>";
+      var seen = {};
+      var groups = { General: [], Starter: [], Premium: [], Elite: [] };
+      l.data.forEach(function (x) {
+        var key = x.package + "|" + x.title;
+        if (seen[key]) return;
+        seen[key] = true;
+        if (groups[x.package]) groups[x.package].push(x);
+      });
+      box.innerHTML = PLAN_ORDER.map(function (pkg) {
+        var items = groups[pkg];
+        if (!items.length) return "";
+        var unlocked = pkg === "General" || activePkgs[pkg];
+        var head = "<h4 style='color:#d9b45b;margin:18px 0 4px'>" + esc(pkg) + " <span style='color:#888;font-weight:400'>(" + items.length + ")</span></h4>";
+        if (!unlocked) return head + upgradeBox(pkg);
+        return head + items.map(function (x) {
+          var link = x.url && x.url !== "#"
+            ? '<a href="' + esc(x.url) + '" target="_blank" rel="noopener">' + (x.kind === "pdf" ? "Open PDF" : x.kind === "note" ? "Read" : "Join Zoom") + " →</a>"
+            : '<span style="color:#888">(placeholder — link coming soon)</span>';
+          return '<div class="lesson"><strong>' + esc(x.title) + '</strong> ' +
+            '<span class="badge active">' + esc(x.package.toUpperCase()) + "</span>" +
+            '<div style="color:#aaa;font-size:13px">' + esc(x.notes || "") + "</div><div>" + link + "</div></div>";
+        }).join("");
       }).join("");
     }
 

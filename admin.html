@@ -91,6 +91,21 @@
       </form>
       <div id="lessons" style="margin-top:14px"><p class="note">Loading…</p></div>
     </div>
+    <div class="card">
+      <h2>Quizzes per plan</h2>
+      <p class="note">Build multiple-choice quizzes. Students take them on the portal and get auto-marked. Start with 2–5 questions.</p>
+      <form id="quizForm">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+          <div><label>Plan</label><select id="qPackage"><option>General</option><option>Starter</option><option>Premium</option><option>Elite</option></select></div>
+          <div><label>Quiz title</label><input id="qTitle" required placeholder="e.g. Starter Week 1 Quiz"></div>
+        </div>
+        <div id="qBuilder"></div>
+        <button type="button" id="qAddQ" class="ghost small">+ Add question</button>
+        <button type="submit" style="margin-top:14px">Save quiz</button>
+        <span id="quizMsg" style="color:#e6c777;font-size:13px;margin-left:10px"></span>
+      </form>
+      <div id="quizList" style="margin-top:14px"><p class="note">Loading…</p></div>
+    </div>
   </main>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -219,6 +234,72 @@
       m.textContent = r.error ? r.error.message : "Module added — live on student portal.";
       if (!r.error) { document.getElementById("lTitle").value = ""; document.getElementById("lUrl").value = ""; document.getElementById("lNotes").value = ""; if (fileInput) fileInput.value = ""; load(); }
     });
+
+    function qBlock() {
+      var d = document.createElement("div");
+      d.className = "qblock";
+      d.style.cssText = "border:1px solid #2c2c2c;border-radius:10px;padding:12px;margin-top:10px";
+      d.innerHTML = "<label>Question</label><input class='qq' placeholder='e.g. What is a pip?'>" +
+        "<div style='display:grid;grid-template-columns:1fr 1fr;gap:8px'>" +
+        "<input class='qo' placeholder='Option A'><input class='qo' placeholder='Option B'>" +
+        "<input class='qo' placeholder='Option C'><input class='qo' placeholder='Option D'></div>" +
+        "<label>Correct answer</label><select class='qa'><option value='0'>A</option><option value='1'>B</option><option value='2'>C</option><option value='3'>D</option></select> " +
+        "<button type='button' class='ghost small qdel'>Remove</button>";
+      d.querySelector(".qdel").addEventListener("click", function () { d.remove(); });
+      return d;
+    }
+    document.getElementById("qAddQ").addEventListener("click", function () {
+      document.getElementById("qBuilder").appendChild(qBlock());
+    });
+    qBuilder0();
+
+    function qBuilder0() {
+      var b = document.getElementById("qBuilder");
+      if (b && !b.children.length) { b.appendChild(qBlock()); b.appendChild(qBlock()); }
+    }
+
+    document.getElementById("quizForm").addEventListener("submit", async function (e) {
+      e.preventDefault();
+      const m = document.getElementById("quizMsg");
+      m.textContent = "Saving…";
+      var qs = [];
+      document.querySelectorAll("#qBuilder .qblock").forEach(function (d) {
+        var q = d.querySelector(".qq").value.trim();
+        var opts = Array.from(d.querySelectorAll(".qo")).map(function (i) { return i.value.trim(); });
+        var ans = parseInt(d.querySelector(".qa").value, 10) || 0;
+        if (q && opts.every(function (o) { return o; })) qs.push({ q: q, options: opts, answer: ans });
+      });
+      var title = document.getElementById("qTitle").value.trim();
+      if (!title) { m.textContent = "Quiz title is required."; return; }
+      if (!qs.length) { m.textContent = "Add at least 1 complete question (text + 4 options)."; return; }
+      const r = await client.from("quizzes").insert({ package: document.getElementById("qPackage").value, title: title, questions: qs });
+      m.textContent = r.error ? r.error.message : "Quiz saved — live on student portal.";
+      if (!r.error) { document.getElementById("qTitle").value = ""; document.getElementById("qBuilder").innerHTML = ""; qBuilder0(); loadQuizzes(); }
+    });
+
+    async function loadQuizzes() {
+      const box = document.getElementById("quizList");
+      const q = await client.from("quizzes").select("id,package,title,questions").order("created_at", { ascending: false }).limit(100);
+      if (q.error) { box.innerHTML = "<p class='note'>Error: " + esc(q.error.message) + " (run 003_quiz.sql first)</p>"; return; }
+      if (!q.data.length) { box.innerHTML = "<p class='note'>No quizzes yet.</p>"; return; }
+      box.innerHTML = q.data.map(function (x) {
+        var n = Array.isArray(x.questions) ? x.questions.length : 0;
+        return "<div style='padding:8px 0;border-bottom:1px solid #222;font-size:13px'><strong>" + esc(x.package) + "</strong> · " + esc(x.title) +
+          " <span style='color:#888'>(" + n + " questions)</span> <button class='small ghost' data-qdel='" + x.id + "'>Delete</button></div>";
+      }).join("");
+      box.querySelectorAll("button[data-qdel]").forEach(function (b) {
+        b.addEventListener("click", async function () {
+          if (!confirm("Delete this quiz and its attempts?")) return;
+          await client.from("attempts").delete().eq("quiz_id", b.getAttribute("data-qdel"));
+          const r = await client.from("quizzes").delete().eq("id", b.getAttribute("data-qdel"));
+          if (r.error) alert(r.error.message);
+          loadQuizzes();
+        });
+      });
+    }
+
+    const _load = load;
+    load = async function () { await _load(); loadQuizzes(); };
 
     (async function () {
       const s = await client.auth.getSession();
