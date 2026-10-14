@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#080808">
+  <title>Student Portal | Olympus Forex Trading Academy</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; min-height: 100vh; background: #080808; color: #f5f0e5; font-family: "DM Sans", Arial, sans-serif; }
+    .wrap { max-width: 960px; margin: auto; padding: 40px 20px 80px; }
+    .top { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 28px; }
+    .top a { color: #e6c777; text-decoration: none; }
+    .card { background: #111; border: 1px solid #8c7134; border-radius: 16px; padding: 28px; margin-bottom: 20px; }
+    .card h2 { color: #d9b45b; margin: 0 0 8px; font-size: 22px; }
+    .card p { color: #aaa; font-size: 14px; line-height: 1.6; }
+    label { display: block; margin: 14px 0 6px; font-size: 13px; color: #ddd; }
+    input, select { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #393939; background: #080808; color: #fff; font-size: 15px; }
+    input:focus, select:focus { outline: 1px solid #d9b45b; }
+    .row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    @media (max-width: 640px) { .row { grid-template-columns: 1fr; } }
+    button { padding: 13px 18px; border: 0; border-radius: 8px; background: #d9b45b; color: #111; font-weight: 800; font-size: 15px; cursor: pointer; margin-top: 16px; }
+    button.ghost { background: none; border: 1px solid #8c7134; color: #e6c777; }
+    button:disabled { opacity: .6; cursor: wait; }
+    #message { min-height: 22px; color: #e6c777; font-size: 13px; margin-top: 12px; }
+    .badge { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 800; letter-spacing: .06em; }
+    .pending { background: #3a2f12; color: #f1cf73; } .paid { background: #12333a; color: #7dd3fc; }
+    .active { background: #123a1f; color: #4ade80; } .suspended { background: #3a1212; color: #f87171; }
+    .enroll, .lesson { border: 1px solid #2a2a2a; border-radius: 10px; padding: 14px; margin-top: 12px; }
+    .lesson a { color: #f1cf73; }
+    .locked { opacity: .55; }
+    .paybox { border-left: 2px solid #d9b45b; padding: 4px 0 4px 14px; color: #c9c3b7; font-size: 14px; }
+    .hidden { display: none; }
+    .tabs { display: flex; gap: 8px; margin-bottom: 8px; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="top">
+      <div><strong style="color:#d9b45b;letter-spacing:.12em">OLYMPUS</strong><div style="font-size:10px;letter-spacing:.2em;color:#aaa">FOREX TRADING ACADEMY</div></div>
+      <div><a href="index.html">← Back to site</a> · <a href="admin.html">Admin</a></div>
+    </div>
+
+    <div class="card" id="authCard">
+      <h2>Student Portal</h2>
+      <p>Login to access your Zoom classes + PDFs. New here? Sign up, then request access for your package. After bank transfer, send your receipt on WhatsApp (<a href="https://wa.me/2349041004544" style="color:#e6c777">09041004544</a>) and admin activates you.</p>
+      <div class="tabs">
+        <button id="tabLogin" class="ghost" type="button">Login</button>
+        <button id="tabSignup" class="ghost" type="button">Sign up</button>
+        <button id="signOutBtn" class="ghost hidden" type="button">Sign out</button>
+      </div>
+      <form id="authForm">
+        <label for="email">Email</label>
+        <input id="email" type="email" autocomplete="email" placeholder="you@example.com" required>
+        <label for="password">Password</label>
+        <input id="password" type="password" autocomplete="current-password" placeholder="Min 6 characters" required>
+        <button id="authBtn" type="submit">Login</button>
+        <button id="forgotBtn" class="ghost" type="button" style="margin-top:10px">Forgot password?</button>
+        <p id="message" role="status" aria-live="polite"></p>
+      </form>
+      <form id="resetForm" class="hidden">
+        <h3 style="color:#d9b45b">Set a new password</h3>
+        <label for="newPass">New password</label>
+        <input id="newPass" type="password" autocomplete="new-password" placeholder="Min 6 characters" required>
+        <button type="submit">Save new password</button>
+      </form>
+    </div>
+
+    <div class="card hidden" id="dashCard">
+      <h2>My Classes</h2>
+      <p id="whoLine"></p>
+      <div class="paybox">
+        <strong>How payment works (bank transfer):</strong><br>
+        1. Request access below → status becomes <span class="badge pending">PENDING</span>.<br>
+        2. Transfer to the account Olympus sends you on WhatsApp, then reply with your receipt + reference.<br>
+        3. Admin verifies and flips you to <span class="badge active">ACTIVE</span> — Zoom + PDFs unlock here.
+      </div>
+      <h3 style="color:#d9b45b;margin-top:22px">Request access</h3>
+      <form id="enrollForm">
+        <div class="row">
+          <div><label>Full name</label><input id="fName" required placeholder="Your full name"></div>
+          <div><label>Phone / WhatsApp</label><input id="fPhone" required placeholder="e.g. 08012345678"></div>
+        </div>
+        <div class="row">
+          <div><label>Package</label><select id="fPackage"><option>Starter</option><option>Premium</option><option>Elite</option></select></div>
+          <div><label>Class type</label><select id="fClass"><option>Online</option><option>Physical</option></select></div>
+        </div>
+        <label>Bank receipt reference (optional)</label>
+        <input id="fReceipt" placeholder="e.g. transfer ref / date">
+        <button type="submit">Submit request</button>
+      </form>
+      <h3 style="color:#d9b45b;margin-top:22px">My enrollments</h3>
+      <div id="enrollList"><p>Loading…</p></div>
+      <h3 style="color:#d9b45b;margin-top:22px">Lessons (Zoom + PDFs)</h3>
+      <div id="lessonList"><p>Login to view.</p></div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="supabase-config.js"></script>
+  <script>
+    var client = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+    var mode = "login";
+    var authCard = document.getElementById("authCard");
+    var dashCard = document.getElementById("dashCard");
+    var msg = document.getElementById("message");
+    var authBtn = document.getElementById("authBtn");
+
+    function say(t) { msg.textContent = t; }
+    function setMode(m) { mode = m; authBtn.textContent = m === "login" ? "Login" : "Create account"; }
+    document.getElementById("tabLogin").onclick = function () { setMode("login"); };
+    document.getElementById("tabSignup").onclick = function () { setMode("signup"); };
+    document.getElementById("signOutBtn").onclick = function () { client.auth.signOut().then(refresh); };
+
+    async function ensureProfile(user) {
+      var r = await client.from("profiles").select("id").eq("id", user.id).maybeSingle();
+      if (!r.data) await client.from("profiles").insert({ id: user.id, email: user.email, role: "student" });
+    }
+
+    async function refresh() {
+      var s = await client.auth.getSession();
+      var user = s.data.session && s.data.session.user;
+      document.getElementById("signOutBtn").classList.toggle("hidden", !user);
+      if (!user) { dashCard.classList.add("hidden"); return; }
+      await ensureProfile(user);
+      dashCard.classList.remove("hidden");
+      document.getElementById("whoLine").textContent = "Signed in as " + user.email;
+      loadEnrollments(user);
+    }
+
+    async function loadEnrollments(user) {
+      var e = await client.from("enrollments").select("*").eq("user_id", user.id).order("created_at", { ascending: false });
+      var box = document.getElementById("enrollList");
+      if (e.error) { box.innerHTML = "<p>Could not load: " + e.error.message + "</p>"; return; }
+      if (!e.data.length) { box.innerHTML = "<p>No requests yet — submit one above.</p>"; }
+      else box.innerHTML = e.data.map(function (x) {
+        return '<div class="enroll"><strong>' + esc(x.package) + ' · ' + esc(x.class_type) + '</strong> ' +
+          '<span class="badge ' + esc(x.status) + '">' + esc(x.status.toUpperCase()) + '</span>' +
+          '<div style="color:#aaa;font-size:13px">' + esc(x.created_at || "") + (x.receipt_ref ? " · Ref: " + esc(x.receipt_ref) : "") + "</div></div>";
+      }).join("");
+      loadLessons(e.data);
+    }
+
+    async function loadLessons(enrolls) {
+      var box = document.getElementById("lessonList");
+      var activePkgs = {};
+      enrolls.forEach(function (x) { if (x.status === "active") activePkgs[x.package] = true; });
+      var l = await client.from("lessons").select("*").order("sort", { ascending: true });
+      if (l.error) { box.innerHTML = "<p>Could not load lessons: " + l.error.message + "</p>"; return; }
+      box.innerHTML = l.data.map(function (x) {
+        var unlocked = x.package === "General" || activePkgs[x.package];
+        var link = x.url && x.url !== "#"
+          ? '<a href="' + esc(x.url) + '" target="_blank" rel="noopener">' + (x.kind === "pdf" ? "Open PDF" : "Join Zoom") + " →</a>"
+          : '<span style="color:#888">(placeholder — link coming soon)</span>';
+        return '<div class="lesson' + (unlocked ? "" : " locked") + '"><strong>' + esc(x.title) + '</strong> ' +
+          '<span class="badge ' + (unlocked ? "active" : "pending") + '">' + (unlocked ? esc(x.package.toUpperCase()) : "LOCKED") + "</span>" +
+          '<div style="color:#aaa;font-size:13px">' + esc(x.notes || "") + "</div><div>" + (unlocked ? link : "Activate your " + esc(x.package) + " enrollment to unlock.") + "</div></div>";
+      }).join("");
+    }
+
+    function esc(s) { return String(s == null ? "" : s).replace(/&/g, "&amp;").replace(/</g, "&lt;"); }
+
+    document.getElementById("authForm").addEventListener("submit", async function (e) {
+      e.preventDefault();
+      say(""); authBtn.disabled = true;
+      try {
+        var email = document.getElementById("email").value.trim();
+        var password = document.getElementById("password").value;
+        var r;
+        if (mode === "signup") {
+          r = await client.auth.signUp({ email: email, password: password });
+          if (r.error) throw r.error;
+          say("Account created — you can now login. Confirm email if asked.");
+        } else {
+          r = await client.auth.signInWithPassword({ email: email, password: password });
+          if (r.error) throw r.error;
+          say("Welcome back.");
+        }
+        refresh();
+      } catch (err) { say(err.message || "Auth failed."); }
+      authBtn.disabled = false;
+    });
+
+    document.getElementById("forgotBtn").addEventListener("click", async function () {
+      var email = document.getElementById("email").value.trim();
+      if (!email) { say("Type your email above first, then tap Forgot password."); return; }
+      say("Sending reset link…");
+      var r = await client.auth.resetPasswordForEmail(email, { redirectTo: window.location.origin + window.location.pathname });
+      say(r.error ? r.error.message : "Reset link sent — check your email (and spam).");
+    });
+
+    document.getElementById("resetForm").addEventListener("submit", async function (e) {
+      e.preventDefault();
+      var np = document.getElementById("newPass").value;
+      if (!np || np.length < 6) { say("Password must be at least 6 characters."); return; }
+      var r = await client.auth.updateUser({ password: np });
+      if (r.error) say(r.error.message);
+      else { say("Password updated — you can now login."); document.getElementById("resetForm").classList.add("hidden"); }
+    });
+
+    if (window.location.hash && window.location.hash.indexOf("type=recovery") !== -1) {
+      document.getElementById("resetForm").classList.remove("hidden");
+      say("Reset link confirmed — set a new password below.");
+    }
+
+    document.getElementById("enrollForm").addEventListener("submit", async function (e) {
+      e.preventDefault();
+      var s = await client.auth.getSession();
+      var user = s.data.session && s.data.session.user;
+      if (!user) { say("Login first."); return; }
+      var row = {
+        user_id: user.id,
+        full_name: document.getElementById("fName").value.trim(),
+        phone: document.getElementById("fPhone").value.trim(),
+        package: document.getElementById("fPackage").value,
+        class_type: document.getElementById("fClass").value,
+        receipt_ref: document.getElementById("fReceipt").value.trim() || null,
+        status: "pending"
+      };
+      var r = await client.from("enrollments").insert(row);
+      if (r.error) say("Could not submit: " + r.error.message);
+      else { say("Request sent — status PENDING. Pay via bank transfer, send receipt on WhatsApp, await activation."); loadEnrollments(user); }
+    });
+
+    refresh();
+  </script>
+</body>
+</html>

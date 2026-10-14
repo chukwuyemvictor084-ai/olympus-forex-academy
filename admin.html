@@ -1,32 +1,43 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#080808">
-  <title>Admin Login | Olympus Forex Trading Academy</title>
+  <title>Admin | Olympus Forex Trading Academy</title>
   <style>
     * { box-sizing: border-box; }
-    body { margin: 0; min-height: 100vh; display: grid; place-items: center; padding: 24px; background: #080808; color: #f5f0e5; font-family: Arial, sans-serif; }
-    .panel { width: 100%; max-width: 420px; padding: 36px; background: #111; border: 1px solid #8c7134; border-radius: 16px; box-shadow: 0 20px 70px #000; }
-    .brand { text-align: center; margin-bottom: 30px; }
-    .brand img { width: 84px; height: 84px; object-fit: contain; }
-    .brand h1 { color: #d9b45b; font-size: 21px; margin: 14px 0 6px; }
-    .brand p, .note { color: #aaa; font-size: 13px; line-height: 1.6; }
-    label { display: block; margin: 18px 0 8px; font-size: 13px; }
-    input { width: 100%; padding: 13px; border-radius: 8px; border: 1px solid #393939; background: #080808; color: white; font-size: 15px; }
-    input:focus { outline: 1px solid #d9b45b; }
-    button { width: 100%; padding: 14px; margin-top: 24px; border: 0; border-radius: 8px; background: #d9b45b; color: #111; font-weight: bold; font-size: 15px; cursor: pointer; }
+    body { margin: 0; min-height: 100vh; padding: 24px; background: #080808; color: #f5f0e5; font-family: Arial, sans-serif; }
+    .panel { width: 100%; max-width: 420px; margin: 8vh auto; padding: 36px; background: #111; border: 1px solid #8c7134; border-radius: 16px; }
+    .dash { max-width: 1020px; margin: auto; }
+    .brand { text-align: center; margin-bottom: 20px; }
+    .brand h1 { color: #d9b45b; font-size: 21px; margin: 10px 0 4px; }
+    .brand p, .note { color: #aaa; font-size: 13px; }
+    label { display: block; margin: 14px 0 6px; font-size: 13px; }
+    input, select { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #393939; background: #080808; color: #fff; font-size: 15px; }
+    button { padding: 12px 16px; border: 0; border-radius: 8px; background: #d9b45b; color: #111; font-weight: bold; font-size: 14px; cursor: pointer; }
+    button.ghost { background: none; border: 1px solid #8c7134; color: #e6c777; }
+    button.small { padding: 7px 10px; font-size: 12px; margin: 2px 4px 2px 0; }
     button:disabled { opacity: .6; cursor: wait; }
-    #message { min-height: 22px; color: #e6c777; font-size: 13px; line-height: 1.5; }
-    .note { text-align: center; margin-top: 24px; }
+    #message { min-height: 22px; color: #e6c777; font-size: 13px; }
+    .topbar { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 18px; }
+    .topbar a { color: #e6c777; text-decoration: none; font-size: 13px; }
+    .card { background: #111; border: 1px solid #2c2c2c; border-radius: 14px; padding: 20px; margin-bottom: 16px; }
+    .card h2 { color: #d9b45b; margin: 0 0 6px; font-size: 18px; }
+    table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    th, td { text-align: left; padding: 10px 8px; border-bottom: 1px solid #242424; vertical-align: top; }
+    th { color: #d9b45b; font-size: 11px; letter-spacing: .08em; }
+    .badge { display: inline-block; padding: 2px 9px; border-radius: 20px; font-size: 10px; font-weight: 800; }
+    .pending { background: #3a2f12; color: #f1cf73; } .paid { background: #12333a; color: #7dd3fc; }
+    .active { background: #123a1f; color: #4ade80; } .suspended { background: #3a1212; color: #f87171; }
+    .filters { display: flex; gap: 8px; flex-wrap: wrap; margin: 10px 0; }
+    .hidden { display: none; }
+    .wrap-scroll { overflow-x: auto; }
   </style>
 </head>
 <body>
-  <main class="panel">
+  <main class="panel" id="loginPanel">
     <div class="brand">
-      <img src="logo.jpg" alt="Olympus Academy logo">
       <h1>OLYMPUS ADMIN</h1>
       <p>Forex Trading Academy · Management Portal</p>
     </div>
@@ -35,44 +46,187 @@
       <input id="email" type="email" autocomplete="username" placeholder="Enter your admin email" required>
       <label for="password">Password</label>
       <input id="password" type="password" autocomplete="current-password" placeholder="Enter your password" required>
-      <button id="loginButton" type="submit">Sign In Securely</button>
+      <button id="loginButton" type="submit" style="width:100%;margin-top:20px">Sign In Securely</button>
+      <p style="text-align:center;margin:12px 0 0"><a href="#" id="forgotLink" style="color:#e6c777;font-size:13px">Forgot password?</a></p>
       <p id="message" role="status" aria-live="polite"></p>
     </form>
-    <p class="note">Authorised administrators only. Keep your login details private.</p>
+    <p class="note" style="text-align:center">Authorised administrators only.</p>
   </main>
+
+  <main class="dash hidden" id="dash">
+    <div class="topbar">
+      <div><strong style="color:#d9b45b">OLYMPUS ADMIN</strong> <span style="color:#aaa;font-size:12px" id="whoLine"></span></div>
+      <div><a href="index.html">Site</a> · <a href="student.html">Student portal</a> · <button id="signOut" class="ghost small" type="button">Sign out</button></div>
+    </div>
+    <div class="card">
+      <h2>Enrollments — bank transfer verification</h2>
+      <p class="note">Flow: student requests → <b>pending</b> → confirms bank receipt on WhatsApp → you mark <b>paid</b> → after final check mark <b>active</b> (unlocks Zoom + PDFs). Use <b>suspended</b> to revoke.</p>
+      <div class="filters">
+        <button class="ghost small" data-filter="pending" type="button">Pending</button>
+        <button class="ghost small" data-filter="paid" type="button">Paid</button>
+        <button class="ghost small" data-filter="active" type="button">Active</button>
+        <button class="ghost small" data-filter="all" type="button">All</button>
+        <button class="ghost small" id="reload" type="button">↻ Reload</button>
+      </div>
+      <div class="wrap-scroll"><table>
+        <thead><tr><th>Student</th><th>Package</th><th>Status</th><th>Receipt</th><th>Actions</th></tr></thead>
+        <tbody id="rows"><tr><td colspan="5">Loading…</td></tr></tbody>
+      </table></div>
+    </div>
+    <div class="card">
+      <h2>Modules per plan — add Zoom / PDF</h2>
+      <p class="note">New modules appear instantly on the student portal for <b>active</b> enrollments in that plan (+ General shows to everyone logged in).</p>
+      <form id="lessonForm">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+          <div><label>Plan</label><select id="lPackage"><option>General</option><option>Starter</option><option>Premium</option><option>Elite</option></select></div>
+          <div><label>Type</label><select id="lKind"><option value="zoom">Zoom class</option><option value="pdf">PDF</option><option value="note">Note</option></select></div>
+        </div>
+        <label>Title</label><input id="lTitle" required placeholder="e.g. Starter Week 2 — Pips & Lots (Zoom)">
+        <label>Link (Zoom URL or PDF link, # = coming soon)</label><input id="lUrl" placeholder="https://zoom.us/j/… or https://…pdf">
+        <label>Or upload a PDF file (PDF type only, max ~20MB)</label><input id="lFile" type="file" accept="application/pdf,.pdf">
+        <label>Notes (meeting ID, passcode, instructions)</label><input id="lNotes" placeholder="e.g. Meeting ID 123, passcode 4567">
+        <label>Order</label><input id="lSort" type="number" value="10" min="0">
+        <button type="submit" style="margin-top:14px">Add module</button>
+        <span id="lessonMsg" style="color:#e6c777;font-size:13px;margin-left:10px"></span>
+      </form>
+      <div id="lessons" style="margin-top:14px"><p class="note">Loading…</p></div>
+    </div>
+  </main>
+
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="supabase-config.js"></script>
   <script>
     const client = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
-    const form = document.getElementById("loginForm");
+    const loginPanel = document.getElementById("loginPanel");
+    const dash = document.getElementById("dash");
     const message = document.getElementById("message");
-    const button = document.getElementById("loginButton");
+    let filter = "pending";
 
-    form.addEventListener("submit", async (event) => {
-      event.preventDefault();
+    document.querySelectorAll("[data-filter]").forEach(function (b) {
+      b.addEventListener("click", function () { filter = b.getAttribute("data-filter"); load(); });
+    });
+    document.getElementById("reload").addEventListener("click", load);
+    document.getElementById("signOut").addEventListener("click", async function () {
+      await client.auth.signOut(); location.reload();
+    });
+
+    document.getElementById("forgotLink").addEventListener("click", async function (e) {
+      e.preventDefault();
+      const email = document.getElementById("email").value.trim();
+      if (!email) { message.textContent = "Type your admin email above first."; return; }
+      message.textContent = "Sending reset link…";
+      const { error } = await client.auth.resetPasswordForEmail(email, { redirectTo: window.location.origin + window.location.pathname });
+      message.textContent = error ? error.message : "Reset link sent — check email (and spam). Open it on this same device.";
+    });
+
+    document.getElementById("loginForm").addEventListener("submit", async function (e) {
+      e.preventDefault();
       message.textContent = "";
-      button.disabled = true;
-      button.textContent = "Signing in…";
+      const btn = document.getElementById("loginButton");
+      btn.disabled = true; btn.textContent = "Signing in…";
       try {
         const email = document.getElementById("email").value.trim();
         const password = document.getElementById("password").value;
         const { data, error } = await client.auth.signInWithPassword({ email, password });
         if (error) throw error;
-        const { data: admin, error: adminError } = await client
-          .from("admin_users").select("user_id").eq("user_id", data.user.id).maybeSingle();
-        if (adminError || !admin) {
-          await client.auth.signOut();
-          throw new Error("This account is not authorised as an administrator.");
-        }
-        message.textContent = "Login successful. Your admin access is verified.";
-        // The management dashboard will be added in the next step.
-      } catch (error) {
-        message.textContent = error.message || "Unable to sign in. Please try again.";
-      } finally {
-        button.disabled = false;
-        button.textContent = "Sign In Securely";
-      }
+        const { data: admin, error: ae } = await client.from("admin_users").select("user_id").eq("user_id", data.user.id).maybeSingle();
+        if (ae || !admin) { await client.auth.signOut(); throw new Error("Not authorised as administrator."); }
+        enter();
+      } catch (err) { message.textContent = err.message || "Unable to sign in."; }
+      btn.disabled = false; btn.textContent = "Sign In Securely";
     });
+
+    async function enter() {
+      loginPanel.classList.add("hidden"); dash.classList.remove("hidden");
+      const s = await client.auth.getSession();
+      document.getElementById("whoLine").textContent = (s.data.session && s.data.session.user.email) || "";
+      load();
+    }
+
+    function esc(s) { return String(s == null ? "" : s).replace(/&/g, "&amp;").replace(/</g, "&lt;"); }
+
+    async function load() {
+      const tb = document.getElementById("rows");
+      tb.innerHTML = '<tr><td colspan="5">Loading…</td></tr>';
+      let q = client.from("enrollments").select("*").order("created_at", { ascending: false }).limit(200);
+      if (filter !== "all") q = q.eq("status", filter);
+      const r = await q;
+      if (r.error) { tb.innerHTML = "<tr><td colspan=5>Error: " + esc(r.error.message) + "</td></tr>"; return; }
+      if (!r.data.length) { tb.innerHTML = "<tr><td colspan=5>No " + esc(filter) + " enrollments.</td></tr>"; }
+      else tb.innerHTML = r.data.map(function (x) {
+        return "<tr><td><strong>" + esc(x.full_name || x.user_id.slice(0, 8)) + "</strong><br><span style='color:#aaa'>" + esc(x.phone || "") + "</span></td>" +
+          "<td>" + esc(x.package) + " · " + esc(x.class_type) + "</td>" +
+          "<td><span class='badge " + esc(x.status) + "'>" + esc(x.status.toUpperCase()) + "</span></td>" +
+          "<td style='color:#aaa'>" + esc(x.receipt_ref || "—") + "</td>" +
+          "<td><button class='small' data-set='paid' data-id='" + x.id + "'>Paid</button>" +
+          "<button class='small' data-set='active' data-id='" + x.id + "'>Activate</button>" +
+          "<button class='small ghost' data-set='suspended' data-id='" + x.id + "'>Suspend</button></td></tr>";
+      }).join("");
+      tb.querySelectorAll("button[data-set]").forEach(function (b) {
+        b.addEventListener("click", async function () {
+          b.disabled = true;
+          const r2 = await client.from("enrollments").update({ status: b.getAttribute("data-set") }).eq("id", b.getAttribute("data-id"));
+          if (r2.error) alert(r2.error.message);
+          load();
+        });
+      });
+      const l = await client.from("lessons").select("id,package,title,kind,url,notes,sort").order("package").order("sort");
+      const lb = document.getElementById("lessons");
+      lb.innerHTML = (l.data || []).map(function (x) {
+        return "<div style='padding:8px 0;border-bottom:1px solid #222;font-size:13px'><strong>" + esc(x.package) + "</strong> · " + esc(x.title) +
+          " <span style='color:#888'>[" + esc(x.kind) + " #" + esc(String(x.sort)) + "]</span><br><span style='color:#aaa'>" + esc(x.notes || "") + "</span> " +
+          (x.url && x.url !== "#" ? "<a style='color:#f1cf73' href='" + esc(x.url) + "' target='_blank' rel='noopener'>open</a> " : "<span style='color:#888'>placeholder</span> ") +
+          "<button class='small ghost' data-del='" + x.id + "'>Delete</button></div>";
+      }).join("");
+      lb.querySelectorAll("button[data-del]").forEach(function (b) {
+        b.addEventListener("click", async function () {
+          if (!confirm("Delete this module?")) return;
+          b.disabled = true;
+          const r3 = await client.from("lessons").delete().eq("id", b.getAttribute("data-del"));
+          if (r3.error) alert(r3.error.message);
+          load();
+        });
+      });
+    }
+
+    document.getElementById("lessonForm").addEventListener("submit", async function (e) {
+      e.preventDefault();
+      const m = document.getElementById("lessonMsg");
+      m.textContent = "Saving…";
+      var urlVal = document.getElementById("lUrl").value.trim() || "#";
+      var kindVal = document.getElementById("lKind").value;
+      var fileInput = document.getElementById("lFile");
+      if (kindVal === "pdf" && fileInput && fileInput.files && fileInput.files.length) {
+        var f = fileInput.files[0];
+        if (f.size > 20 * 1024 * 1024) { m.textContent = "PDF too large — max 20MB."; return; }
+        m.textContent = "Uploading PDF…";
+        var path = document.getElementById("lPackage").value + "/" + Date.now() + "-" + f.name.replace(/[^a-zA-Z0-9._-]/g, "_");
+        const up = await client.storage.from("lesson-pdfs").upload(path, f, { contentType: "application/pdf", upsert: false });
+        if (up.error) { m.textContent = "Upload failed: " + up.error.message + " (run 002_pdfs.sql in Supabase SQL Editor first)"; return; }
+        const pub = client.storage.from("lesson-pdfs").getPublicUrl(path);
+        urlVal = pub.data.publicUrl;
+      }
+      const row = {
+        package: document.getElementById("lPackage").value,
+        kind: kindVal,
+        title: document.getElementById("lTitle").value.trim(),
+        url: urlVal,
+        notes: document.getElementById("lNotes").value.trim() || null,
+        sort: parseInt(document.getElementById("lSort").value, 10) || 0
+      };
+      if (!row.title) { m.textContent = "Title is required."; return; }
+      const r = await client.from("lessons").insert(row);
+      m.textContent = r.error ? r.error.message : "Module added — live on student portal.";
+      if (!r.error) { document.getElementById("lTitle").value = ""; document.getElementById("lUrl").value = ""; document.getElementById("lNotes").value = ""; if (fileInput) fileInput.value = ""; load(); }
+    });
+
+    (async function () {
+      const s = await client.auth.getSession();
+      const u = s.data.session && s.data.session.user;
+      if (!u) return;
+      const { data: admin } = await client.from("admin_users").select("user_id").eq("user_id", u.id).maybeSingle();
+      if (admin) enter();
+    })();
   </script>
 </body>
 </html>
