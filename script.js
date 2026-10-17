@@ -19,6 +19,16 @@
     ]
   };
 
+  // Paystack payment page per package (keys must match PACKAGES values).
+  var PAYSTACK_LINKS = {
+    "Starter": "https://paystack.shop/pay/Olympus-Online-starter",
+    "Premium": "https://paystack.shop/pay/Olympus-Online-Premium",
+    "Elite": "https://paystack.shop/pay/olympus-online-elite",
+    "Physical Starter": "https://paystack.shop/pay/olympus-physical-starter",
+    "Physical Premium": "https://paystack.shop/pay/Olympus-Physical-Premium",
+    "Physical Elite": "https://paystack.shop/pay/olympus-physical-elite"
+  };
+
   document.addEventListener("DOMContentLoaded", function () {
     // Mobile nav (was missing on homepage)
     var toggle = document.querySelector(".menu-toggle");
@@ -140,6 +150,18 @@
           }
           if (match) packageField.value = match.value;
         }
+
+        // If a Paystack payment page is configured for this package, send them to pay.
+        var payUrl = PAYSTACK_LINKS[wantValue];
+        if (payUrl) {
+          window.open(payUrl, "_blank", "noopener");
+          showStatus("Opening secure Paystack checkout — complete payment, then send your receipt on WhatsApp to activate your portal.", false);
+          return;
+        }
+
+        // Otherwise: carry the selection into the application form and scroll to it.
+        var applySection = document.getElementById("apply");
+        if (applySection) applySection.scrollIntoView({ behavior: "smooth", block: "start" });
       });
     });
 

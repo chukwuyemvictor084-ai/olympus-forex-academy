@@ -44,7 +44,7 @@
 
     <div class="card" id="authCard">
       <h2>Student Portal</h2>
-      <p>Login to access your Zoom classes + PDFs. New here? Sign up, then request access for your package. After bank transfer, send your receipt on WhatsApp (<a href="https://wa.me/2349041004544" style="color:#e6c777">09041004544</a>) and admin activates you.</p>
+      <p>Login to access your Zoom classes + PDFs. New here? Sign up, then request access for your package. Pay online with Paystack (or bank transfer), send your receipt on WhatsApp (<a href="https://wa.me/2349041004544" style="color:#e6c777">09041004544</a>) and admin activates you.</p>
       <div class="tabs">
         <button id="tabLogin" class="ghost" type="button">Login</button>
         <button id="tabSignup" class="ghost" type="button">Sign up</button>
@@ -71,10 +71,11 @@
       <h2>My Classes</h2>
       <p id="whoLine"></p>
       <div class="paybox">
-        <strong>How payment works (bank transfer):</strong><br>
+        <strong>How payment works:</strong><br>
         1. Request access below → status becomes <span class="badge pending">PENDING</span>.<br>
-        2. Transfer to the account Olympus sends you on WhatsApp, then reply with your receipt + reference.<br>
-        3. Admin verifies and flips you to <span class="badge active">ACTIVE</span> — Zoom + PDFs unlock here.
+        2. Pay online with Paystack using the button below, or transfer to the account Olympus sends you on WhatsApp.<br>
+        3. Send your receipt + reference, then admin verifies and flips you to <span class="badge active">ACTIVE</span> — Zoom + PDFs unlock here.
+        <div id="payNowWrap" style="margin-top:10px"></div>
       </div>
       <h3 style="color:#d9b45b;margin-top:22px">Request access</h3>
       <form id="enrollForm">
@@ -115,6 +116,28 @@
     document.getElementById("tabLogin").onclick = function () { setMode("login"); };
     document.getElementById("tabSignup").onclick = function () { setMode("signup"); };
     document.getElementById("signOutBtn").onclick = function () { client.auth.signOut().then(refresh); };
+
+    var PAYSTACK_LINKS = {
+      "Online|Starter": "https://paystack.shop/pay/Olympus-Online-starter",
+      "Online|Premium": "https://paystack.shop/pay/Olympus-Online-Premium",
+      "Online|Elite": "https://paystack.shop/pay/olympus-online-elite",
+      "Physical|Starter": "https://paystack.shop/pay/olympus-physical-starter",
+      "Physical|Premium": "https://paystack.shop/pay/Olympus-Physical-Premium",
+      "Physical|Elite": "https://paystack.shop/pay/olympus-physical-elite"
+    };
+    function updatePayNow() {
+      var wrap = document.getElementById("payNowWrap");
+      if (!wrap) return;
+      var pkg = document.getElementById("fPackage").value;
+      var cls = document.getElementById("fClass").value;
+      var url = PAYSTACK_LINKS[cls + "|" + pkg];
+      wrap.innerHTML = url
+        ? '<a target="_blank" rel="noopener" href="' + url + '" style="display:inline-block;margin-top:6px;background:#d9b45b;color:#111;padding:11px 16px;border-radius:8px;font-weight:800;text-decoration:none">Pay ' + esc(cls) + " " + esc(pkg) + ' with Paystack →</a>'
+        : "";
+    }
+    document.getElementById("fPackage").addEventListener("change", updatePayNow);
+    document.getElementById("fClass").addEventListener("change", updatePayNow);
+    updatePayNow();
 
     async function ensureProfile(user) {
       var r = await client.from("profiles").select("id").eq("id", user.id).maybeSingle();
